@@ -7,8 +7,6 @@ public class playerAttack : MonoBehaviour
 {
     public Slider ammoSlider;
     public Text ammoText;
-    public GameObject playerGun;
-    Image playerGunSprite;
 
     public static int currAmmo;
     public static int maxAmmo;
@@ -16,7 +14,13 @@ public class playerAttack : MonoBehaviour
 
     public GameObject bullet;
 
+    private Vector3 mousePosition;
+    private Vector3 diff;
+    private float rotZ;
+
     public Weapon equippedWeapon;
+
+    public GameObject playerWeapon;
 
     // Start is called before the first frame update
     void Start()
@@ -29,13 +33,19 @@ public class playerAttack : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        playerGunSprite = playerGun.GetComponent<Sprite>();
-        playerGunSprite = equippedWeapon.weaponSprite;
-
         ammoSlider.maxValue = maxAmmo;
         ammoSlider.value = currAmmo;
 
         ammoText.text = currAmmo + " / " + ammoMags;
+
+        playerWeapon.GetComponent<SpriteRenderer>();
+        playerWeapon.GetComponent<SpriteRenderer>().sprite = equippedWeapon.weaponSprite;
+
+        diff = Camera.main.ScreenToWorldPoint(Input.mousePosition);
+        diff.Normalize();
+
+        rotZ = Mathf.Atan2(diff.y, diff.x) * Mathf.Rad2Deg;
+        transform.rotation = Quaternion.Euler(0f, 0f, rotZ);
 
 
 
@@ -43,16 +53,20 @@ public class playerAttack : MonoBehaviour
         {
             currAmmo--;
 
-            //Instantiate(bullet, new Vector3(0, 0, (bullet.transform.Translate.forward * Time.deltaTime)), 0);
-        }
-        
+            GameObject instantiatedBullet = Instantiate(bullet, playerWeapon.transform.position, transform.rotation);
 
-        if(currAmmo == 0)
+            instantiatedBullet.GetComponent<Rigidbody>();
+            instantiatedBullet.GetComponent<Rigidbody>().velocity = transform.TransformDirection(new Vector2(0, 10));
+
+            Destroy(instantiatedBullet, 1.5f);
+        }
+
+        if (currAmmo == 0 && ammoMags > 0)
         {
             Reload();
         }
 
-        if(Input.GetKeyDown(KeyCode.R) && ammoMags > 0 && currAmmo < maxAmmo|| currAmmo == 0 && ammoMags > 0)
+        else if(Input.GetKeyDown(KeyCode.R) && ammoMags > 0 && currAmmo < maxAmmo)
         {
             Reload();
         }

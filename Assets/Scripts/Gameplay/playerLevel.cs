@@ -1,13 +1,18 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class playerLevel : MonoBehaviour
 {
     public static int playerLvl;
     public int xpMod;
     public int xpRequired;
-    public int xpCurrent; 
+    public int xpCurrent;
+
+    public Slider xpSlider;
+    public Text xpText;
+    public Text levelText;
 
     // Start is called before the first frame update
     void Start()
@@ -18,11 +23,33 @@ public class playerLevel : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
+        xpSlider.maxValue = xpRequired;
+        xpSlider.value = xpCurrent;
+        xpText.text = xpCurrent + " / " + xpRequired;
+        levelText.text = "Level " + playerLvl;
+
         if(xpCurrent >= xpRequired)
         {
-            playerLvl++;
-            xpCurrent -= xpRequired;
-            xpRequired *= xpMod;
+            LevelUp();
+        }
+
+        if(Input.GetKeyDown(KeyCode.L)) //Dummy function to test Levelling functionality
+        {
+            GiveXP(500);
         }
     }
+
+    void GiveXP(int XPToGive) //Function to give XP
+    {
+        xpCurrent += XPToGive;
+    }
+
+    void LevelUp() //Function to level player up
+    {
+        playerLvl++;
+        xpCurrent -= xpRequired;
+        xpRequired *= xpMod;
+    }
 }
+
+
