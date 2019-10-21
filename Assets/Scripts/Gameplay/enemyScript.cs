@@ -2,34 +2,68 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class enemyScript : MonoBehaviour
+public class EnemyScript : MonoBehaviour
 {
-    public GameObject player;
-    public static float moveSpeed;
+    GameObject player;
+    public float moveSpeed;
     public int damage;
+    public int enemyHP;
+
+    public float attackTime;
+    public float currentTime;
 
     void Start()
     {
-        moveSpeed = 0.05f;
+        player = GameObject.FindGameObjectWithTag("Player");
+        moveSpeed = 1f;
+        enemyHP = 10;
+        damage = 2;
+
+        currentTime = attackTime;
     }
+
     // Update is called once per frame
     void Update()
     {
-        this.transform.LookAt(player.transform);
-
-        if(Vector2.Distance(transform.position, player.transform.position) > 5)
+        if (Vector2.Distance(this.gameObject.transform.position, player.transform.position) >= 1 && Vector2.Distance(this.gameObject.transform.position, player.transform.position) <= 20)
         {
-            transform.position += transform.forward * moveSpeed * Time.deltaTime;
+            LookAt2D(this.transform, player.transform.position);
+            transform.position = Vector2.MoveTowards(this.transform.position, player.transform.position, (moveSpeed * Time.deltaTime));
         }
 
-        else if (Vector2.Distance(transform.position, player.transform.position) > 5 && Vector2.Distance(transform.position, player.transform.position) < 2)
+        else if (Vector2.Distance(this.gameObject.transform.position, player.transform.position) > 0 && Vector2.Distance(this.gameObject.transform.position, player.transform.position) < 1)
         {
-            InvokeRepeating("Attack", 5, 5);
+            currentTime -= Time.deltaTime;
+
+            if (currentTime <= 0)
+            {
+                Attack();
+                currentTime += attackTime;
+            }
+        }
+
+        if (enemyHP <= 0)
+        {
+           EnemyDeath();
         }
     }
 
     void Attack()
     {
-        //player.
+        playerHealth.currHealth -= damage;
+    }
+
+    void EnemyDeath()
+    {
+        Destroy(this.gameObject);
+        playerLevel.GiveXP(250);
+    }
+
+    public static void LookAt2D(Transform transform, Vector2 target)
+    {
+        Vector2 current = transform.position;
+        var direction = target - current;
+        var angle = Mathf.Atan2(direction.y, direction.x) * Mathf.Rad2Deg;
+        transform.rotation = Quaternion.AngleAxis(angle, Vector3.forward);
     }
 }

@@ -11,21 +11,23 @@ public class playerAttack : MonoBehaviour
     public static int currAmmo;
     public static int maxAmmo;
     public static int ammoMags;
+    public static int attackDamage;
 
     public GameObject bullet;
 
-    private Vector3 mousePosition;
+    public Camera camMain;
+    private Vector3 target;
+
     private Vector3 diff;
     private float rotZ;
 
     public Weapon equippedWeapon;
 
-    public GameObject playerWeapon;
-
     // Start is called before the first frame update
     void Start()
     {
         maxAmmo = equippedWeapon.ammoPerMag;
+        attackDamage = equippedWeapon.fireDamage;
         currAmmo = maxAmmo;
         ammoMags = 10;
     }
@@ -38,27 +40,25 @@ public class playerAttack : MonoBehaviour
 
         ammoText.text = currAmmo + " / " + ammoMags;
 
-        playerWeapon.GetComponent<SpriteRenderer>();
-        playerWeapon.GetComponent<SpriteRenderer>().sprite = equippedWeapon.weaponSprite;
 
-        diff = Camera.main.ScreenToWorldPoint(Input.mousePosition);
+        target = camMain.ScreenToWorldPoint(Input.mousePosition);
+        diff = target - transform.position;
         diff.Normalize();
 
         rotZ = Mathf.Atan2(diff.y, diff.x) * Mathf.Rad2Deg;
-        transform.rotation = Quaternion.Euler(0f, 0f, rotZ);
-
-
+        Quaternion newRotation = Quaternion.Euler(0f, 0f, rotZ + 270.0f);
+        transform.rotation = Quaternion.Lerp(transform.rotation, newRotation, Time.deltaTime * 5.0f);
 
         if (Input.GetMouseButtonDown(0))
         {
             currAmmo--;
 
-            GameObject instantiatedBullet = Instantiate(bullet, playerWeapon.transform.position, transform.rotation);
+            GameObject instantiatedBullet = Instantiate(bullet, transform.position, transform.rotation);
 
             instantiatedBullet.GetComponent<Rigidbody>();
             instantiatedBullet.GetComponent<Rigidbody>().velocity = transform.TransformDirection(new Vector2(0, 10));
 
-            Destroy(instantiatedBullet, 1.5f);
+            Destroy(instantiatedBullet, 1.25f);
         }
 
         if (currAmmo == 0 && ammoMags > 0)

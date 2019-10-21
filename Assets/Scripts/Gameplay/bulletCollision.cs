@@ -7,11 +7,10 @@ public class bulletCollision : MonoBehaviour
     // Update is called once per frame
     void OnCollisionEnter(Collision col)
     {
-        Debug.Log(col.gameObject.name);
-
-        if(col.gameObject.tag == "Enemy")
+        if (col.gameObject.tag == "Enemy")
         {
-            Destroy(col.gameObject);
+            col.gameObject.GetComponent<EnemyScript>();
+            col.gameObject.GetComponent<EnemyScript>().enemyHP -= playerAttack.attackDamage;
         }
     }
 }

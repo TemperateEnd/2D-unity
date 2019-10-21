@@ -8,11 +8,13 @@ public class playerLevel : MonoBehaviour
     public static int playerLvl;
     public int xpMod;
     public int xpRequired;
-    public int xpCurrent;
+    public static int xpCurrent;
 
     public Slider xpSlider;
     public Text xpText;
     public Text levelText;
+
+    public GameObject enemy;
 
     // Start is called before the first frame update
     void Start()
@@ -39,7 +41,7 @@ public class playerLevel : MonoBehaviour
         }
     }
 
-    void GiveXP(int XPToGive) //Function to give XP
+    public static void GiveXP(int XPToGive) //Function to give XP
     {
         xpCurrent += XPToGive;
     }
@@ -49,6 +51,10 @@ public class playerLevel : MonoBehaviour
         playerLvl++;
         xpCurrent -= xpRequired;
         xpRequired *= xpMod;
+        enemy.GetComponent<EnemyScript>();
+        enemy.GetComponent<EnemyScript>().enemyHP *= xpMod;
+        enemy.GetComponent<EnemyScript>().damage *= xpMod;
+        enemy.GetComponent<EnemyScript>().moveSpeed *= xpMod;
     }
 }
 
