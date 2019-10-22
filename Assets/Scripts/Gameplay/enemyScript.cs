@@ -12,6 +12,8 @@ public class EnemyScript : MonoBehaviour
     public float attackTime;
     public float currentTime;
 
+    private Animator zAnimator;
+
     void Start()
     {
         player = GameObject.FindGameObjectWithTag("Player");
@@ -20,6 +22,8 @@ public class EnemyScript : MonoBehaviour
         damage = 2;
 
         currentTime = attackTime;
+
+        zAnimator = this.gameObject.GetComponent<Animator>();
     }
 
     // Update is called once per frame
@@ -29,6 +33,7 @@ public class EnemyScript : MonoBehaviour
         {
             LookAt2D(this.transform, player.transform.position);
             transform.position = Vector2.MoveTowards(this.transform.position, player.transform.position, (moveSpeed * Time.deltaTime));
+            zAnimator.Play("Enemy",0,0.0f);
         }
 
         else if (Vector2.Distance(this.gameObject.transform.position, player.transform.position) > 0 && Vector2.Distance(this.gameObject.transform.position, player.transform.position) < 1)

@@ -30,11 +30,5 @@ public class EnemySpawn : MonoBehaviour
     void SpawnEnemies()
     {
         enemyInstance = Instantiate(enemy, this.transform.position, this.transform.rotation);
-
-        if(enemyInstance.GetComponent<EnemyScript>().enemyHP <= 0)
-        {
-            Destroy(enemyInstance);
-            playerLevel.GiveXP(250);
-        }
     }
 }

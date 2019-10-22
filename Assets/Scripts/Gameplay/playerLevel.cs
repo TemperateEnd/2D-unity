@@ -51,10 +51,10 @@ public class playerLevel : MonoBehaviour
         playerLvl++;
         xpCurrent -= xpRequired;
         xpRequired *= xpMod;
-        enemy.GetComponent<EnemyScript>();
-        enemy.GetComponent<EnemyScript>().enemyHP *= xpMod;
-        enemy.GetComponent<EnemyScript>().damage *= xpMod;
-        enemy.GetComponent<EnemyScript>().moveSpeed *= xpMod;
+
+        enemy.GetComponent<EnemyScript>().enemyHP += 2;
+        enemy.GetComponent<EnemyScript>().damage += 2;
+        enemy.GetComponent<EnemyScript>().moveSpeed += 2;
     }
 }
 
